@@ -1,6 +1,6 @@
-#
+################################
 # INSTALAR Y EJECUTAR LIBRERI-AS
-#
+################################
 install.packages("remotes")
 library(remotes)
 install_github("cran/fbRanks")
@@ -10,35 +10,45 @@ library(ggplot2)
 
 
 
-#
+################################
 # SITUAR DIRECTORIO DE TRABAJO
-#
+################################
 
 #setwd("D:/Prohoff/git/BeduFinalR")
 setwd("D:/OneDrive/Programación - Code/BEDU. Data Análisis/Fase 2/R/BeduFinalR")
 
 
 
-#
+################################
 # DESCARGAR ARCHIVOS CSV EN CARPETA /DATA
 #   https://www.football-data.co.uk/spainm.php
-#
-download.file("https://www.football-data.co.uk/mmz4281/1011/SP1.csv", destfile ="data/SP1-1011.csv", mode = "wb")
-download.file("https://www.football-data.co.uk/mmz4281/1112/SP1.csv", destfile ="data/SP1-1112.csv", mode = "wb")
-download.file("https://www.football-data.co.uk/mmz4281/1213/SP1.csv", destfile ="data/SP1-1213.csv", mode = "wb")
-download.file("https://www.football-data.co.uk/mmz4281/1314/SP1.csv", destfile ="data/SP1-1314.csv", mode = "wb")
-download.file("https://www.football-data.co.uk/mmz4281/1415/SP1.csv", destfile ="data/SP1-1415.csv", mode = "wb")
-download.file("https://www.football-data.co.uk/mmz4281/1516/SP1.csv", destfile ="data/SP1-1516.csv", mode = "wb")
-download.file("https://www.football-data.co.uk/mmz4281/1617/SP1.csv", destfile ="data/SP1-1617.csv", mode = "wb")
-download.file("https://www.football-data.co.uk/mmz4281/1718/SP1.csv", destfile ="data/SP1-1718.csv", mode = "wb")
-download.file("https://www.football-data.co.uk/mmz4281/1819/SP1.csv", destfile ="data/SP1-1819.csv", mode = "wb")
-download.file("https://www.football-data.co.uk/mmz4281/1920/SP1.csv", destfile ="data/SP1-1920.csv", mode = "wb")
+################################
+download.file("https://www.football-data.co.uk/mmz4281/1011/SP1.csv", 
+              destfile ="data/SP1-1011.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1112/SP1.csv", 
+              destfile ="data/SP1-1112.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1213/SP1.csv", 
+              destfile ="data/SP1-1213.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1314/SP1.csv", 
+              destfile ="data/SP1-1314.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1415/SP1.csv", 
+              destfile ="data/SP1-1415.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1516/SP1.csv", 
+              destfile ="data/SP1-1516.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1617/SP1.csv", 
+              destfile ="data/SP1-1617.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1718/SP1.csv", 
+              destfile ="data/SP1-1718.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1819/SP1.csv", 
+              destfile ="data/SP1-1819.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1920/SP1.csv", 
+              destfile ="data/SP1-1920.csv", mode = "wb")
 
 
 
-#
+################################
 # LECTURA DE DATOS
-#
+################################
 
 ## Cambiar directorio
 #setwd("D:/Prohoff/git/BeduFinalR/data")
@@ -59,9 +69,9 @@ write.csv(SP1920, file = 'SP1-1920.csv')
 
 
 
-#
+################################
 # PROCESAMIENTO DE DATOS
-#
+################################
 
 ## Una lista con todos los csv
 lista <- lapply(dir(), read.csv)
@@ -71,13 +81,11 @@ lista <- lapply(lista, select,
                 # Seleccionamos las columnas pertinentes
 lapply(lista, colnames) # Ahora son las mismas columnas
 
-## Arreglamos las fechas
-lista <- lapply(lista, mutate, Date = as.Date(Date, format = "%d/%m/%y"))
 
-# Hacemos un solo Data Frame
+## Hacemos un solo Data Frame
 data <- do.call(rbind, lista)
 
-# Renombramos
+## Renombramos
 data <- rename(data, 
                date = Date, 
                home.team = HomeTeam, 
@@ -87,32 +95,44 @@ data <- rename(data,
                Max.2.5.o = BbMx.2.5,
                Max.2.5.u = BbMx.2.5.1)
 
-# Ordenamos columnas con datos finales
+## Ordenamos columnas con datos finales
 colnames(data)
 data <- select(data, -FTR, -BbAv.2.5, -BbAv.2.5.1) 
 head(data, n = 2L); tail(data, n = 2L)
 
-# Data frames de partidos y equipos
-setwd('D:/Prohoff/git/BeduFinalR')
+## Arreglamos las fechas
+str(data) # Las fechas están en dd/mm/yy 28/08/10
+?strptime # %d %m %y
+data$date <- strptime(data$date, format = '%d/%m/%y')
+str(data)
+
+## Creamos CSV final, Data frames de partidos y equipos
+#setwd('D:/Prohoff/git/BeduFinalR')
+setwd("D:/OneDrive/Programación - Code/BEDU. Data Análisis/Fase 2/R/BeduFinalR")
 md <- data %>% select(date:away.score)
 write.csv(md, "match.data.csv", row.names = FALSE)
 df <- create.fbRanks.dataframes(scores.file = "match.data.csv")
 teams <- df$teams; scores <- df$scores
 
 head(teams, n = 2L); dim(teams); head(scores, n = 2L); dim(scores)
-####
+
+
 #### Tenemos 33 equipos y 3800 partidos desde el 2010 hasta el 2020
 ####
 
+
+################################
 # Conjuntos iniciales de entrenamiento y de prueba
+################################
+
 f <- scores$date # Fechas de partidos
 fu <- unique(f) # Fechas sin repetición
-#####
+
 ##### Hubo 1236 fechas en las que hubo partidos( en algunas fechas hubo varios partidos)
 #####
 Ym <- format(fu, "%Y-%m") # Meses y años
 Ym <- unique(Ym) # Meses y años sin repetir
-####
+
 #### Hubo partidos por 101 meses
 ####
 format(scores$date, "%Y-%m")
@@ -120,12 +140,13 @@ format(scores$date, "%Y-%m")
 ### No hay partidos entre los mese 06 y 07 en 2011 y 2012, 2014, 2015, 2016, 2017, 2018, 2019, ,
 ### en 2013 no hay partidos en en el mes 07
 ### en 2020 no hubo partidos en 04 y 05
+###
 
 ## Aqui se seleccionan los partidos de diciembre 2011-08 que fue el 15avo mes que jugaron
 places <- which(Ym[15]==format(scores$date, "%Y-%m")) # Consideramos partidos de 15 meses para comenzar a ajustar el modelo
 ffe <- scores$date[max(places)] # Fecha final conjunto de entrenamiento
 ### se jugó en diciembre 2011 hasta el dia 18
-
+###
 
 # Consideraremos partidos de 15 meses para comenzar a ajustar el modelo. Así, nuestro primer conjunto de entrenamiento consiste de datos de partidos hasta el `r ffe` 
 train <- scores %>% filter(date <= ffe) ## entrenamos desde el inicio del dataset hasta el 18 de dic de 2011
@@ -134,7 +155,11 @@ test <- scores %>% filter(date > ffe)   ## los datos posteriores a esa fecha, se
 head(train, n = 1); tail(train, n = 1)
 head(test, n = 1); tail(test, n = 1)
 
+
+
+################################
 # Primer ajuste del modelo
+################################
 
 traindate <- unique(train$date)
 testdate <- unique(test$date)
@@ -144,11 +169,15 @@ ranks <- rank.teams(scores = scores, teams = teams,
                     max.date = traindate[length(traindate)])
 ranks
 coef(ranks)
-#######
-####### le da una puntuacion al equipo por ataque defensa y total, y numero de partidos
+
+### le da una puntuacion al equipo por ataque defensa y total, y numero de partidos
+###
 
 
+################################
 # Primera predicción
+################################
+
 testdate[1]
 pred <- predict(ranks, date = testdate[1])
 
@@ -161,7 +190,7 @@ pas
 pht
 pat
 
-# Continuar ajustando y prediciendo
+## Continuar ajustando y prediciendo
 
 phs <- NULL; pas <- NULL; pht <- NULL; pat <- NULL
 for(i in 1:(length(unique(scores$date))-170)){
@@ -183,7 +212,7 @@ pas
 pht
 pat
 
-# Eliminamos NA's
+## Eliminamos NA's
 
 buenos <- !(is.na(phs) | is.na(pas)) # 
 phs <- phs[buenos] # predicted home score
@@ -201,14 +230,18 @@ mean(phs + pas < 2.5 & momio$home.score + momio$away.score < 2.5)
 hs <- momio$home.score
 as <- momio$away.score
 
-# Probabilidades condicionales
+## Probabilidades condicionales
 mean(phs + pas > 3) # proporción de partidos con más de tres goles según el modelo
 mean(phs + pas > 3 & hs + as > 2.5)/mean(phs + pas > 3) # probabilidad condicional estimada de ganar en over 2.5
 
 mean(phs + pas < 2.1) # proporción de partidos con menos de 2.1 goles según el modelo
 mean(phs + pas < 2.1 & hs + as < 2.5)/mean(phs + pas < 2.1) # probabilidad condicional estimada de ganar en under 2.5
 
+
+
+################################
 # Juegos con momios máximos
+################################
 
 cap <- 50000; g <- NULL
 
@@ -227,7 +260,10 @@ for(j in 1:length(phs)){
 }
 
 
+
+################################
 # Escenario con momios máximos
+################################
 g
 g <- data.frame(Num_Ap = 1:length(g), Capital = g)
 
@@ -250,7 +286,11 @@ p
 
 mean(g$Capital) #El capital promedio invertido en maximos es de 44881.79
 
+
+
+################################
 # Escenario con momios promedio
+################################
 
 cap <- 50000; g <- NULL
 
@@ -289,7 +329,12 @@ p
 
 mean(g$Capital) #El capital promedio invertido en promedio es de 29816.94
 
+
+
+################################
 #Paso 1 Planteamiento de hipotesis
+################################
+
 # h0 
 # h1
 hip <- 20000
