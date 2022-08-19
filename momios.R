@@ -1,3 +1,6 @@
+#
+# INSTALAR Y EJECUTAR LIBRERI-AS
+#
 install.packages("remotes")
 library(remotes)
 install_github("cran/fbRanks")
@@ -7,113 +10,86 @@ library(ggplot2)
 
 
 
-# Colocar el directorio de trabajo según corresponda
+#
+# SITUAR DIRECTORIO DE TRABAJO
+#
 
-setwd("D:/Prohoff/git/BeduFinalR")
+#setwd("D:/Prohoff/git/BeduFinalR")
+setwd("D:/OneDrive/Programación - Code/BEDU. Data Análisis/Fase 2/R/BeduFinalR")
 
-# Descarga de archivos
-# https://www.football-data.co.uk/spainm.php
 
-u1011 <- "https://www.football-data.co.uk/mmz4281/1011/SP1.csv"
-u1112 <- "https://www.football-data.co.uk/mmz4281/1112/SP1.csv"
-u1213 <- "https://www.football-data.co.uk/mmz4281/1213/SP1.csv"
-u1314 <- "https://www.football-data.co.uk/mmz4281/1314/SP1.csv"
-u1415 <- "https://www.football-data.co.uk/mmz4281/1415/SP1.csv"
-u1516 <- "https://www.football-data.co.uk/mmz4281/1516/SP1.csv"
-u1617 <- "https://www.football-data.co.uk/mmz4281/1617/SP1.csv"
-u1718 <- "https://www.football-data.co.uk/mmz4281/1718/SP1.csv"
-u1819 <- "https://www.football-data.co.uk/mmz4281/1819/SP1.csv"
-u1920 <- "https://www.football-data.co.uk/mmz4281/1920/SP1.csv"
 
-#RawData <- "C:\\\"
-download.file(url = u1011, destfile ="data/SP1-1011.csv", mode = "wb")
-download.file(url = u1112, destfile ="data/SP1-1112.csv", mode = "wb")
-download.file(url = u1213, destfile ="data/SP1-1213.csv", mode = "wb")
-download.file(url = u1314, destfile ="data/SP1-1314.csv", mode = "wb")
-download.file(url = u1415, destfile ="data/SP1-1415.csv", mode = "wb")
-download.file(url = u1516, destfile ="data/SP1-1516.csv", mode = "wb")
-download.file(url = u1617, destfile ="data/SP1-1617.csv", mode = "wb")
-download.file(url = u1718, destfile ="data/SP1-1718.csv", mode = "wb")
-download.file(url = u1819, destfile ="data/SP1-1819.csv", mode = "wb")
+#
+# DESCARGAR ARCHIVOS CSV EN CARPETA /DATA
+#   https://www.football-data.co.uk/spainm.php
+#
+download.file("https://www.football-data.co.uk/mmz4281/1011/SP1.csv", destfile ="data/SP1-1011.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1112/SP1.csv", destfile ="data/SP1-1112.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1213/SP1.csv", destfile ="data/SP1-1213.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1314/SP1.csv", destfile ="data/SP1-1314.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1415/SP1.csv", destfile ="data/SP1-1415.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1516/SP1.csv", destfile ="data/SP1-1516.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1617/SP1.csv", destfile ="data/SP1-1617.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1718/SP1.csv", destfile ="data/SP1-1718.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1819/SP1.csv", destfile ="data/SP1-1819.csv", mode = "wb")
+download.file("https://www.football-data.co.uk/mmz4281/1920/SP1.csv", destfile ="data/SP1-1920.csv", mode = "wb")
 
-# Lectura de datos
 
-setwd("D:/Prohoff/git/BeduFinalR/data")
-lista <- lapply(list.files(path = "D:/Prohoff/git/BeduFinalR/data"), read.csv)
 
-download.file(url = u1920, destfile ="SP1-1920.csv", mode = "wb")
+#
+# LECTURA DE DATOS
+#
 
-# Procesamiento de datos
+## Cambiar directorio
+#setwd("D:/Prohoff/git/BeduFinalR/data")
+setwd("D:/OneDrive/Programación - Code/BEDU. Data Análisis/Fase 2/R/BeduFinalR/data")
 
-#lista <- lapply(lista, select, Date:FTR, BbMx.2.5:BbAv.2.5.1)
+## Corregir nombres de columnas del último archivo para que sean iguales
+##    CUIDADO al correr el código sobre el csv ya previamente modificado
+SP1920 <- read.csv('SP1-1920.csv')
+colnames(SP1920)
+SP1920 <- rename(SP1920,  
+                 BbMx.2.5 = Max.2.5, 
+                 BbAv.2.5 = Avg.2.5,
+                 BbMx.2.5.1 = Max.2.5.1,
+                 BbAv.2.5.1 = Avg.2.5.1)
+SP1920 <- select(SP1920, -Time)
+colnames(SP1920)
+write.csv(SP1920, file = 'SP1-1920.csv')
 
-d1011 <- read.csv("SP1-1011.csv")
-d1112 <- read.csv("SP1-1112.csv")
-d1213 <- read.csv("SP1-1213.csv")
-d1314 <- read.csv("SP1-1314.csv")
-d1415 <- read.csv("SP1-1415.csv")
-d1516 <- read.csv("SP1-1516.csv")
-d1617 <- read.csv("SP1-1617.csv")
-d1718 <- read.csv("SP1-1718.csv")
-d1819 <- read.csv("SP1-1819.csv")
-d1920 <- read.csv("SP1-1920.csv")
 
-d1011 <- select(d1011, Date:FTAG, BbMx.2.5:BbAv.2.5.1)
-d1112 <- select(d1112, Date:FTAG, BbMx.2.5:BbAv.2.5.1)
-d1213 <- select(d1213, Date:FTAG, BbMx.2.5:BbAv.2.5.1)
-d1314 <- select(d1314, Date:FTAG, BbMx.2.5:BbAv.2.5.1)
-d1415 <- select(d1415, Date:FTAG, BbMx.2.5:BbAv.2.5.1)
-d1516 <- select(d1516, Date:FTAG, BbMx.2.5:BbAv.2.5.1)
-d1617 <- select(d1617, Date:FTAG, BbMx.2.5:BbAv.2.5.1)
-d1718 <- select(d1718, Date:FTAG, BbMx.2.5:BbAv.2.5.1)
-d1819 <- select(d1819, Date:FTAG, BbMx.2.5:BbAv.2.5.1)
-d1920 <- select(d1920, Date:FTAG, Max.2.5:Avg.2.5.1)
-d1920 <- select(d1920, -Time)
-colnames(d1920)
 
-# Arreglamos las fechas
-d1011 <- mutate(d1011, Date = as.Date(Date, format = "%d/%m/%y"))
-d1112 <- mutate(d1112, Date = as.Date(Date, format = "%d/%m/%y"))
-d1213 <- mutate(d1213, Date = as.Date(Date, format = "%d/%m/%y"))
-d1314 <- mutate(d1314, Date = as.Date(Date, format = "%d/%m/%y"))
-d1415 <- mutate(d1415, Date = as.Date(Date, format = "%d/%m/%y"))
-d1516 <- mutate(d1516, Date = as.Date(Date, format = "%d/%m/%y"))
-d1617 <- mutate(d1617, Date = as.Date(Date, format = "%d/%m/%y"))
-d1718 <- mutate(d1718, Date = as.Date(Date, format = "%d/%m/%y"))
-d1819 <- mutate(d1819, Date = as.Date(Date, format = "%d/%m/%Y"))
-d1920 <- mutate(d1920, Date = as.Date(Date, format = "%d/%m/%Y"))
+#
+# PROCESAMIENTO DE DATOS
+#
 
-# Unimos de d1415S a d1819S
+## Una lista con todos los csv
+lista <- lapply(dir(), read.csv)
+lapply(lista, colnames) # Observamos sus columnas. No tienen el mismo orden
+lista <- lapply(lista, select, 
+                Date:FTR, BbMx.2.5, BbAv.2.5, BbMx.2.5.1,BbAv.2.5.1)
+                # Seleccionamos las columnas pertinentes
+lapply(lista, colnames) # Ahora son las mismas columnas
 
-d1019 <- rbind(d1011, d1112, d1213, d1314, d1415, d1516, d1617, d1718, d1819)
+## Arreglamos las fechas
+lista <- lapply(lista, mutate, Date = as.Date(Date, format = "%d/%m/%y"))
 
-# Renombrar columnas
-d1019 <- rename(d1019,  Max.2.5.O = BbMx.2.5, 
-                 Avg.2.5.O = BbAv.2.5, 
-                 Max.2.5.U = BbMx.2.5.1,
-                 Avg.2.5.U = BbAv.2.5.1)
-
-d1920 <- rename(d1920,  Max.2.5.O = Max.2.5, 
-                 Avg.2.5.O = Avg.2.5, 
-                 Max.2.5.U = Max.2.5.1,
-                 Avg.2.5.U = Avg.2.5.1)
-
-# Ordenamos las columnas
-
-d1019 <- select(d1019, colnames(d1920))
-
-# Volvemos a unir
-
-d1020S <- rbind(d1019, d1920)
+# Hacemos un solo Data Frame
+data <- do.call(rbind, lista)
 
 # Renombramos
+data <- rename(data, 
+               date = Date, 
+               home.team = HomeTeam, 
+               home.score = FTHG, 
+               away.team = AwayTeam, 
+               away.score = FTAG,
+               Max.2.5.o = BbMx.2.5,
+               Max.2.5.u = BbMx.2.5.1)
 
-d1020S <- rename(d1020S, date = Date, home.team = HomeTeam, home.score = FTHG, away.team = AwayTeam, away.score = FTAG)
-
-# Ordenamos columnas
-
-data <- select(d1020S, date, home.team, home.score, away.team, away.score:Avg.2.5.U) # Este data frame contiene todos los datos necesarios
-
+# Ordenamos columnas con datos finales
+colnames(data)
+data <- select(data, -FTR, -BbAv.2.5, -BbAv.2.5.1) 
 head(data, n = 2L); tail(data, n = 2L)
 
 # Data frames de partidos y equipos
